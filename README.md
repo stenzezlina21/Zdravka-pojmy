@@ -1,0 +1,1 @@
+# Zdravka-pojmy
