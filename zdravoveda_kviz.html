@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zdravověda – procvičování pojmů</title>
+<style>
+:root{color-scheme:light;--blue:#175da8;--yellow:#ffd84d;--ink:#172033;--muted:#5d6879}
+*{box-sizing:border-box}
+body{margin:0;background:#f2f5fa;color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:850px;margin:0 auto;padding:24px 16px 48px}
+header{background:var(--blue);color:white;border-radius:20px;padding:24px;margin-bottom:18px}
+h1{font-size:clamp(1.5rem,4vw,2.1rem);margin:0 0 6px}
+header p{margin:0;color:#e7f1ff}
+.panel{background:white;border:1px solid #dce3ee;border-radius:18px;padding:20px;box-shadow:0 8px 24px #17365d0c}
+.top{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.pill{background:#edf3fb;color:#25486f;border-radius:999px;padding:7px 12px;font-size:.9rem;font-weight:650}
+.progress{height:8px;background:#e7edf5;border-radius:99px;overflow:hidden;margin:12px 0 24px}
+.progress>div{height:100%;width:0;background:var(--yellow);transition:width .2s}
+.prompt{font-size:clamp(1.3rem,4vw,2rem);font-weight:750;margin:0 0 8px}
+.hint{color:var(--muted);margin:0 0 18px}
+.answers{display:grid;gap:12px}
+.answer{width:100%;text-align:left;background:white;border:2px solid #d8e0eb;border-radius:13px;padding:15px 16px;font:inherit;cursor:pointer;transition:.12s}
+.answer:hover:not(:disabled){border-color:var(--blue);background:#f5f9ff}
+.answer:focus-visible,button:focus-visible{outline:3px solid #8bbcff;outline-offset:2px}
+.answer.correct{border-color:#16834a;background:#e8f8ef;color:#125b35}
+.answer.wrong{border-color:#c43b3b;background:#fff0f0;color:#8b2020}
+.answer:disabled{cursor:default}
+.feedback{min-height:30px;margin:14px 0 0;font-weight:650}
+.feedback.good{color:#16834a}.feedback.bad{color:#b12d2d}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button.action{border:0;border-radius:11px;padding:11px 16px;background:var(--blue);color:white;font:inherit;font-weight:700;cursor:pointer}
+button.secondary{background:#e9eef5;color:#24364d}
+button.action:disabled{opacity:.45;cursor:default}
+.small{font-size:.9rem;color:var(--muted);margin-top:18px}
+.finish{text-align:center;padding:22px 0}
+.finish h2{font-size:1.7rem}
+@media(max-width:520px){main{padding:12px 10px 28px}.panel{padding:16px}header{padding:20px}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>Zdravověda – procvičování pojmů</h1><p>Latinský / odborný pojem → vyber správný český význam.</p></header>
+<section class="panel" aria-live="polite">
+<div class="top">
+<div class="pill" id="count">Pojem 1 / 122</div>
+<div class="pill" id="score">Správně napoprvé: 0 · Chyby: 0</div>
+</div>
+<div class="progress"><div id="bar"></div></div>
+<div id="quiz">
+<p class="prompt" id="term"></p>
+<p class="hint">Který význam odpovídá pojmu?</p>
+<div class="answers" id="answers"></div>
+<p class="feedback" id="feedback"></p>
+<div class="controls"><button class="action" id="next" disabled>Další pojem →</button><button class="action secondary" id="reset">Začít znovu</button></div>
+</div>
+<div class="finish" id="finish" hidden>
+<h2>Hotovo!</h2><p id="result"></p>
+<button class="action" id="again">Procvičit znovu</button>
+</div>
+<p class="small">Pojmy jsou promíchané. Při chybné odpovědi zůstane otázka otevřená, dokud nevybereš správnou možnost. „Začít znovu“ vynuluje skóre i pořadí.</p>
+</section>
+</main>
+<script>
+const terms = [["Abrupce", "odtržení"], ["Absces", "ohraničený zánět"], ["Adnexicitida", "zánět vaječníku"], ["Agens", "činitel, původce, činidlo"], ["Alterace", "chorobná nebo nežádoucí změna, poškození, např. vědomí"], ["Amputace", "odstranění periferní části těla"], ["Anaerobní", "bez přístupu nebo přísunu kyslíku"], ["Analgezie", "tišení nebo tlumení bolesti"], ["Anamnéza", "předchorobí; součást vyšetřování, při němž se pacienta dotazujeme na onemocnění, úrazy a nemoci v rodině"], ["Anemie", "chudokrevnost, nedostatek erytrocytů"], ["Anestezie", "znecitlivění, ztráta cítivosti"], ["Aneuryzma", "výduť"], ["Antidepresiva", "skupina léků užívaných k léčbě deprese"], ["Antidiabetika", "léky proti cukrovce"], ["Antidotum", "protijed"], ["Antigen", "látka podněcující v těle tvorbu protilátek"], ["Antipyretika", "léky proti horečce"], ["Anurie", "zástava močení a tvorby moči"], ["Apendicitida", "zánět červovitého přívěsku"], ["Apex", "vrcholek, hrot, špička"], ["Arterie (arteria)", "tepna"], ["Arytmie", "porucha srdečního rytmu"], ["Aspirace", "vdechnutí tuhého tělesa nebo tekutiny"], ["Asystolie", "nepřítomnost srdečních stahů, zástava srdce"], ["Atelektáza", "neúplné rozvinutí nebo roztažení; nevzdušnost části plic"], ["Ateroskleróza", "onemocnění tepen, při němž se v jejich stěnách ukládají tukové látky a vápník"], ["Báze lební", "spodina lebky"], ["Blast syndrom", "syndrom z poranění tlakovou vlnou"], ["Bradykardie", "zpomalená srdeční frekvence pod 60 tepů za minutu"], ["Combustiones", "popáleniny"], ["Congelationes", "omrzliny"], ["Crush syndrom", "těžký stav vzniklý rozsáhlým rozdrcením kosterního svalstva"], ["Cyanóza", "namodralé zbarvení kůže a sliznic"], ["Dehydratace", "ztráta a nedostatek vody v organizmu"], ["Delirium", "kvalitativní porucha vědomí, pozornosti, vnímání, myšlení a paměti"], ["Dezorientace", "porucha orientace, ztráta vědomí o místě a čase"], ["Distální", "vzdálený, umístěný na opačné straně"], ["Distorze (distorzio)", "podvrtnutí kloubu"], ["Dysfunkce", "porucha funkce"], ["Edém", "otok, nadměrné hromadění tekutiny v buňkách, tkáních a orgánech"], ["Embolus", "vmetek, pevný útvar nesený krevním řečištěm"], ["Emfyzém", "nahromadění vzduchu v tkáních"], ["Endotracheální", "týkající se vnitřku průdušnice"], ["Epidurální", "týkající se prostoru mezi lebkou a tvrdou plenou mozkovou"], ["Epigastrium", "nadbřišek, horní část břicha"], ["Erytém", "červené zbarvení kůže způsobené rozšířením krevních cév"], ["Eschara", "příškvar, strup"], ["Extravazace", "únik tekutiny mimo cévy"], ["Febrilie", "horečnatý stav, nad 38 °C"], ["Fibrilace", "míhání, velmi rychlé a nepravidelné stahy svalu, zejména srdečního"], ["Glukometr", "přístroj na měření cukru v krvi"], ["Gravidita", "těhotenství"], ["Hemateméza", "zvracení krve"], ["Hematom", "rozsáhlý uzavřený krevní výron v hlubších tkáních"], ["Hematurie", "přítomnost krve v moči"], ["Hemoperitoneum", "přítomnost krve v peritoneální dutině"], ["Hemoptýza", "vykašlávání nebo plivání krve z dýchacích cest"], ["Hemoragický", "charakterizovaný krvácením, obsahující krev"], ["Hemotorax", "přítomnost krve v pohrudniční dutině"], ["Hyperglykemie", "vysoká koncentrace krevního cukru"], ["Hyperkalemie", "zvýšená hladina kalia v krvi"], ["Hypertermie", "zvýšení vnitřní teploty těla nad normální rozmezí"], ["Hypoglykemie", "nízká koncentrace krevního cukru"], ["Hypotenze", "nízký krevní tlak"], ["Hypotermie", "pokles tělesné teploty při nadměrné ztrátě tepla"], ["Hypoventilace", "mělké, nedostatečné dýchání"], ["Hypovolemie", "snížení objemu obíhající krve"], ["Hypoxie", "nedostatek kyslíku v tkáních či v celém organizmu"], ["Intracerebrální", "do mozkové tkáně"], ["Intravenózní", "nitrožilní"], ["Intubace", "zavedení endotracheální rourky do průdušnice"], ["Invaginace", "vchlípení jedné části střeva do následující části"], ["Ischemie", "místní nedokrevnost tkáně a orgánu"], ["Kardiogenní", "vznikající v přímé souvislosti se srdcem"], ["Kardiopulmonální resuscitace", "soubor resuscitačních opatření k obnovení nebo udržení základních životních funkcí"], ["Kapnometrie", "metoda měření obsahu oxidu uhličitého"], ["Kóma", "stav hlubokého bezvědomí"], ["Komoce", "otřes"], ["Komprese", "stlačení, stisknutí"], ["Kontuze", "zhmoždění, pohmoždění"], ["Kraniocerebrální", "týkající se lebky a mozku"], ["Laparoskopie", "endoskopické vyšetření dutiny břišní"], ["Luxace (luxatio)", "vymknutí kloubu, vykloubení"], ["Mediastinitida", "zánět mezihrudí"], ["Meléna", "natrávená krev ve stolici"], ["Mióza", "zúžené zornice"], ["Motilita", "hybnost, pohyblivost"], ["Mydriáza", "rozšířené zornice"], ["Nauzea", "nevolnost, pocit na zvracení"], ["Nekróza", "odumření buňky, tkáně či části orgánu"], ["Neurokranium", "lebeční část"], ["Obstrukce", "překážka, zamezení či ztížení průchodnosti dutým orgánem"], ["Ortopnoe", "těžká dušnost"], ["Oxygenace", "okysličení"], ["Palpitace", "bušení srdce vnímané pacientem"], ["Pankreatitida", "zánět slinivky břišní"], ["Patogeneze", "soubor procesů, které jsou odpovědí organizmu na poškození"], ["Penetrující", "pronikající určitou vrstvou"], ["Perforace", "proděravění, protržení, vznik chorobného otvoru v dutém orgánu"], ["Perfuze", "průtok krve tkání, orgánem"], ["Peritoneum", "pobřišnice"], ["Peritonitida", "zánět pobřišnice"], ["Petechie", "drobné tečkovité krvácení do kůže či sliznic"], ["Pneumotorax", "přítomnost vzduchu v pleurální dutině s následným smrštěním (kolapsem)"], ["Polytrauma", "mnohočetná poranění postihující řadu orgánů lidského těla"], ["Prognóza", "předpověď průběhu a zakončení nemoci"], ["Reponovat", "napravit, vrátit do původní polohy"], ["Retence", "zadržení"], ["Revize", "přezkoumání, přešetření"], ["Ruptura", "roztržení, trhlina, prasknutí"], ["Spazmus", "svalová křeč"], ["Splanchnokranium", "obličejová část"], ["Stenokardie", "bolest na hrudi typická pro anginu pectoris"], ["Subdurální", "prostor pod tvrdou plenou mozkovou"], ["Subfebrilie", "zvýšená tělesná teplota mezi 37–38 °C"], ["Suicidium", "sebevražda"], ["Tachykardie", "zrychlená srdeční frekvence nad 90 tepů za minutu"], ["Tachypnoe", "zrychlené dýchání"], ["Termoregulace", "řízení tělesné teploty"], ["Tracheostome", "chirurgický výkon, při němž je na krku v průdušnici vytvořen otvor"], ["Transverzální léze míšní", "anatomické přerušení míchy"], ["Ventilace", "proudění vzduchu do dýchacího ústrojí a zpět ven"]];
+let order=[], index=0, firstTry=true, correctFirst=0, mistakes=0, solved=0, answered=false, correctIndex=-1;
+const $=id=>document.getElementById(id);
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function start(){order=shuffle(terms.map((_,i)=>i));index=0;correctFirst=0;mistakes=0;solved=0;firstTry=true;answered=false;$('quiz').hidden=false;$('finish').hidden=true;render();}
+function render(){
+ if(index>=order.length){finish();return;}
+ answered=false;firstTry=true;$('next').disabled=true;$('feedback').textContent='';$('feedback').className='feedback';
+ $('count').textContent=`Pojem ${index+1} / ${order.length}`;
+ $('bar').style.width=`${index/order.length*100}%`;
+ const item=terms[order[index]];$('term').textContent=item[0];
+ const wrong=shuffle(terms.map((t,i)=>i).filter(i=>i!==order[index]))[0];
+ const choices=shuffle([order[index],wrong]);correctIndex=choices.indexOf(order[index]);
+ const area=$('answers');area.innerHTML='';
+ choices.forEach((i,pos)=>{const b=document.createElement('button');b.className='answer';b.textContent=terms[i][1];b.addEventListener('click',()=>choose(pos,b));area.appendChild(b);});
+ updateScore();
+}
+function choose(pos,button){
+ if(answered)return;
+ if(pos===correctIndex){
+  answered=true;solved++;if(firstTry)correctFirst++;
+  button.classList.add('correct');
+  [...$('answers').children].forEach(b=>b.disabled=true);
+  $('feedback').textContent='Správně!';$('feedback').className='feedback good';
+  $('next').disabled=false;
+ }else{
+  firstTry=false;mistakes++;button.classList.add('wrong');button.disabled=true;
+  $('feedback').textContent='To není ono — zkus druhou možnost.';$('feedback').className='feedback bad';
+ }
+ updateScore();
+}
+function updateScore(){$('score').textContent=`Správně napoprvé: ${correctFirst} · Chyby: ${mistakes} · Vyřešeno: ${solved}`;}
+function next(){if(!answered)return;index++;render();}
+function finish(){$('quiz').hidden=true;$('finish').hidden=false;$('count').textContent='Dokončeno';$('bar').style.width='100%';$('result').textContent=`Správně napoprvé: ${correctFirst} z ${terms.length}. Chybné pokusy: ${mistakes}.`;}
+$('next').addEventListener('click',next);$('reset').addEventListener('click',start);$('again').addEventListener('click',start);start();
+</script>
+</body>
+</html>
